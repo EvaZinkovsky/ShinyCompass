@@ -8,7 +8,7 @@ library(tidyverse)
 compass <- read.csv("data/CompassReport.csv", stringsAsFactors = FALSE)
 
 # select useful rows for the table
-CompassColumns <- select(compass, Traveller.Name,Departure.Date,Return.Date,Cost.Object,Line.Manager.Name,Endorser.Name,Status,Base.Contacts,Country,City,Segment.Start.Date,Segment.End.Date)
+CompassColumns <- select(compass,Traveller.Name,Departure.Date,Return.Date,Cost.Object,Line.Manager.Name,Endorser.Name,Status,Base.Contacts,Country,City,Segment.Start.Date,Segment.End.Date)
 
 #convert data formats so that they can be sorted later on
 CompassColumns$Departure.Date <- as.Date(CompassColumns$Departure.Date, format = "%d/%m/%Y")

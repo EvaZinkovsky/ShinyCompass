@@ -12,7 +12,6 @@ ui <- fluidPage(
                  unique(CompassColumns$Endorser.Name),
                  multiple = TRUE),
   
-  
   #create a panel to input Group Leaders
   selectizeInput("GLident",
                  "Enter Group Leader ident",
@@ -31,3 +30,4 @@ ui <- fluidPage(
   
   tableOutput("CompassTable")
   )
+
