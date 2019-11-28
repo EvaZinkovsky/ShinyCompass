@@ -29,3 +29,9 @@ if(!file.exists("saved-queries.json")){
 
 saved_queries <- jsonlite::read_json("saved-queries.json")
 
+print_query <- function(query_list) {
+  HTML("<strong>Name: </strong>", 
+       unlist(query_list$name), 
+       "<br/>"
+  )
+}

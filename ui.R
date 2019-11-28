@@ -31,6 +31,8 @@ ui <- fluidPage(
   
   actionButton("save", "Save query"),
   
+  actionButton("load", "Load saved query"),
+  
   textOutput("saved"),
   
   bsModal("savemodal", "Save query", "save", size = "large",
@@ -42,6 +44,13 @@ ui <- fluidPage(
           actionButton("butsave", "Save"),
           actionButton("butcancel", "Cancel")
   ),
+  
+  bsModal("loadmodal", "Load a saved query", "load", size = "large",
+          uiOutput("loadquery"),
+          htmlOutput("loaded_query")
+  ),
+  
+  
   
   tableOutput("CompassTable")
   )

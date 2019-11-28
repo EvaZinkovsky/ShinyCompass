@@ -17,6 +17,7 @@ function(input, output, session) {
   rv <- reactiveValues(saved_queries = saved_queries)
   
   querystatus <- eventReactive(input$save, {
+    # browser()
     list(program_directors = input$PLident,
          group_leaders = input$GLident,
          team_leaders = input$TLident)
@@ -49,27 +50,41 @@ function(input, output, session) {
     jsonlite::write_json(rv$saved_queries, "saved-queries.json")
   })
   
+  output$loadquery <- renderUI({
+    queries <- unlist(lapply(rv$saved_queries, function(x) x$name))
+    selectizeInput("saved_query_name", 
+                   "Choose a query to load", 
+                   queries
+    )
+  })
+  
+  loaded_query <- reactive({
+    input$saved_query_name
+    # browser()
+    if(!is.null(input$saved_query_name)) {
+    # browser()
+      query_names <- unlist(lapply(rv$saved_queries, function(x) x$name))
+      # isolate(n <- which(query_names == input$saved_query_name))
+      query <- rv$saved_queries[match(input$saved_query_name, query_names)]
+    }
+  })
+  
+  output$loaded_query <- renderText({
+    print_query(loaded_query())
+  })
+  
   leaders <- eventReactive(input$submit, {
-   
- 
-   
-     
-    CompassColumns %>% 
+   CompassColumns %>% 
       filter(Endorser.Name %in% input$PLident | Line.Manager.Name %in% c(input$PLident, input$GLident, input$TLident))%>%
       select(-Endorser.Name, -Line.Manager.Name)%>%
       mutate(Blank1 = " ",Blank2 = " " )%>%
       rename(" " = Traveller.Name,WBS = Cost.Object,Departure = Departure.Date,Return = Return.Date,"   " = Blank1,"    " = Segment.Start.Date,"     " = Segment.End.Date,"                 " = Blank2, "Base Contact" = Base.Contacts )%>%
       arrange(Departure) %>% 
       mutate(Departure = as.character(Departure), Return = as.character(Return))
-      
-
-    
-    
   })
   
   output$CompassTable <- renderTable({
     leaders()
-    
   })
 }
 
