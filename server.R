@@ -9,9 +9,46 @@
 
 library(shiny)
 library(tidyverse)
+library(shinyBS)
  
 # Define server logic required to draw a histogram
-function(input, output) {
+function(input, output, session) {
+  
+  rv <- reactiveValues(saved_queries = saved_queries)
+  
+  querystatus <- eventReactive(input$save, {
+    list(program_directors = input$PLident,
+         group_leaders = input$GLident,
+         team_leaders = input$TLident)
+  })
+  
+  output$querystatus <- renderText({
+    text <- querystatus()
+    pl <- paste("Program Leaders: ", text$program_directors)
+    gl <- paste("Group Leaders: ", text$group_leaders)
+    tl <- paste("Team Leaders: ", text$team_leaders)
+    HTML(paste(pl, gl, tl, sep = '<br/>'))
+  })
+  
+  observeEvent(input$butsave, {
+    toggleModal(session, "savemodal", toggle = "close")
+    # browser()
+    if(length(rv$saved_queries[[1]]) > 1) {
+      rv$saved_queries[length(rv$saved_queries) + 1] <- list(
+        list(
+          name = input$queryname, query = querystatus()
+        )
+      )
+    } else {
+      rv$saved_queries <- list(
+        list(
+          name = input$queryname, query = querystatus()
+        )
+      )
+    }
+    jsonlite::write_json(rv$saved_queries, "saved-queries.json")
+  })
+  
   leaders <- eventReactive(input$submit, {
    
  
@@ -35,3 +72,4 @@ function(input, output) {
     
   })
 }
+

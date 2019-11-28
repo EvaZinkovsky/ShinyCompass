@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyBS)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -27,6 +28,20 @@ ui <- fluidPage(
   
   
   actionButton("submit", "Submit All"),
+  
+  actionButton("save", "Save query"),
+  
+  textOutput("saved"),
+  
+  bsModal("savemodal", "Save query", "save", size = "large",
+          HTML("<strong>The query you are saving has the following structure:</strong>"),
+          HTML("<br/>"),
+          htmlOutput("querystatus"),
+          HTML("<br/>"),
+          textInput("queryname", "Please give the query a name"),
+          actionButton("butsave", "Save"),
+          actionButton("butcancel", "Cancel")
+  ),
   
   tableOutput("CompassTable")
   )
