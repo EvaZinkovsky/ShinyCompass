@@ -32,6 +32,21 @@ saved_queries <- jsonlite::read_json("saved-queries.json")
 print_query <- function(query_list) {
   HTML("<strong>Name: </strong>", 
        unlist(query_list$name), 
-       "<br/>"
+       "<br/>",
+       print_query_status(query_list$query)
   )
 }
+
+print_query_status <- function(query) {
+  HTML(
+    "<strong>Program Directors: </strong>",
+    paste(unlist(query$program_directors), collapse = "; "),
+    "<br/>",
+    "<strong>Group Leaders: </strong>",
+    paste(unlist(query$group_leaders), collapse = "; "),
+    "<br/>",
+    "<strong>Team Leaders: </strong>",
+    paste(unlist(query$team_leaders), collapse = "; ")
+  )
+}
+       

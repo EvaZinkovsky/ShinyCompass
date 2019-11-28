@@ -23,13 +23,14 @@ function(input, output, session) {
          team_leaders = input$TLident)
   })
   
-  output$querystatus <- renderText({
-    text <- querystatus()
-    pl <- paste("Program Leaders: ", text$program_directors)
-    gl <- paste("Group Leaders: ", text$group_leaders)
-    tl <- paste("Team Leaders: ", text$team_leaders)
-    HTML(paste(pl, gl, tl, sep = '<br/>'))
-  })
+  output$querystatus <- renderText(HTML(print_query_status(querystatus())))
+  #   browser()
+  #   text <- querystatus()
+  #   pl <- paste("Program Leaders: ", text$program_directors)
+  #   gl <- paste("Group Leaders: ", text$group_leaders)
+  #   tl <- paste("Team Leaders: ", text$team_leaders)
+  #   HTML(paste(pl, gl, tl, sep = '<br/>'))
+  # })
   
   observeEvent(input$butsave, {
     toggleModal(session, "savemodal", toggle = "close")
@@ -50,6 +51,26 @@ function(input, output, session) {
     jsonlite::write_json(rv$saved_queries, "saved-queries.json")
   })
   
+  observeEvent(input$butcancelsave, {
+    toggleModal(session, "savemodal", toggle = "close")
+  })
+  
+  observeEvent(input$butload, {
+    toggleModal(session, "loadmodal", toggle = "close")
+    cat("here")
+    query <- loaded_query()
+    browser()
+    updateSelectizeInput(session, 
+                         "PLident",
+                         "Enter Program Director ident", 
+                         unique(CompassColumns$Endorser.Name),
+                         selected = query$query$program_directors)
+  })
+  
+  observeEvent(input$butcancelload, {
+    toggleModal(session, "loadmodal", toggle = "close")
+  })
+  
   output$loadquery <- renderUI({
     queries <- unlist(lapply(rv$saved_queries, function(x) x$name))
     selectizeInput("saved_query_name", 
@@ -64,12 +85,13 @@ function(input, output, session) {
     if(!is.null(input$saved_query_name)) {
     # browser()
       query_names <- unlist(lapply(rv$saved_queries, function(x) x$name))
-      # isolate(n <- which(query_names == input$saved_query_name))
-      query <- rv$saved_queries[match(input$saved_query_name, query_names)]
+      query <- rv$saved_queries[[match(input$saved_query_name, query_names)]]
+      return(query)
     }
   })
   
   output$loaded_query <- renderText({
+    # browser()
     print_query(loaded_query())
   })
   

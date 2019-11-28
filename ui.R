@@ -42,12 +42,14 @@ ui <- fluidPage(
           HTML("<br/>"),
           textInput("queryname", "Please give the query a name"),
           actionButton("butsave", "Save"),
-          actionButton("butcancel", "Cancel")
+          actionButton("butcancelsave", "Cancel")
   ),
   
   bsModal("loadmodal", "Load a saved query", "load", size = "large",
           uiOutput("loadquery"),
-          htmlOutput("loaded_query")
+          htmlOutput("loaded_query"),
+          actionButton("butload", "Load"),
+          actionButton("butcancelload", "Cancel")
   ),
   
   
