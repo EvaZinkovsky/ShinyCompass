@@ -23,11 +23,11 @@ compass <- read_excel("CompassReport.xlsx") %>%
 
 CompassColumns <- compass
 
-if(!file.exists("saved-queries.json")){
-  jsonlite::write_json("", "saved-queries.json")
+if(!file.exists("saved-queries.txt")){
+  dput(list(), "saved-queries.txt")
 } 
 
-saved_queries <- jsonlite::read_json("saved-queries.json")
+saved_queries <- dget("saved-queries.txt")
 
 print_query <- function(query_list) {
   HTML("<strong>Name: </strong>", 

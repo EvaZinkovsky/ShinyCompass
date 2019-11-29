@@ -35,7 +35,7 @@ function(input, output, session) {
   observeEvent(input$butsave, {
     toggleModal(session, "savemodal", toggle = "close")
     # browser()
-    if(length(rv$saved_queries[[1]]) > 1) {
+    if(length(rv$saved_queries) > 0) {
       rv$saved_queries[length(rv$saved_queries) + 1] <- list(
         list(
           name = input$queryname, query = querystatus()
@@ -48,7 +48,7 @@ function(input, output, session) {
         )
       )
     }
-    jsonlite::write_json(rv$saved_queries, "saved-queries.json")
+    dput(rv$saved_queries, "saved-queries.txt")
   })
   
   observeEvent(input$butcancelsave, {
@@ -57,9 +57,8 @@ function(input, output, session) {
   
   observeEvent(input$butload, {
     toggleModal(session, "loadmodal", toggle = "close")
-    cat("here")
     query <- loaded_query()
-    browser()
+    # browser()
     updateSelectizeInput(session, 
                          "PLident",
                          "Enter Program Director ident", 
