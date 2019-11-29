@@ -26,14 +26,13 @@ ui <- fluidPage(
                 unique(c(CompassColumns$Line.Manager.Name, CompassColumns$Endorser.Name)),
                 multiple = TRUE),
   
-  
-  actionButton("submit", "Submit All"),
-  
   actionButton("save", "Save query"),
   
   actionButton("load", "Load saved query"),
   
-  textOutput("saved"),
+  actionButton("submit", "Submit All"),
+  
+  actionButton("clear", "Clear query"),
   
   bsModal("savemodal", "Save query", "save", size = "large",
           HTML("<strong>The query you are saving has the following structure:</strong>"),

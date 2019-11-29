@@ -10,7 +10,7 @@
 library(shiny)
 library(tidyverse)
 library(shinyBS)
- 
+
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
@@ -49,6 +49,7 @@ function(input, output, session) {
       )
     }
     dput(rv$saved_queries, "saved-queries.txt")
+    updateTextInput(session, "queryname", "Please give the query a name", value = "")
   })
   
   observeEvent(input$butcancelsave, {
@@ -64,6 +65,20 @@ function(input, output, session) {
                          "Enter Program Director ident", 
                          unique(CompassColumns$Endorser.Name),
                          selected = query$query$program_directors)
+    
+    updateSelectizeInput(session,
+                         "GLident",
+                         "Enter Group Leader ident",
+                         unique(c(CompassColumns$Line.Manager.Name, CompassColumns$Endorser.Name)),
+                         selected = query$query$group_leaders)
+    
+    
+    #create a panel to input Program Director
+    updateSelectizeInput(session,
+                         "TLident",
+                         "Enter Team Leader ident",
+                         unique(c(CompassColumns$Line.Manager.Name, CompassColumns$Endorser.Name)),
+                         selected = query$query$team_leaders)
   })
   
   observeEvent(input$butcancelload, {
@@ -78,11 +93,32 @@ function(input, output, session) {
     )
   })
   
+  observeEvent(input$clear, {
+    updateSelectizeInput(session,
+                         "PLident",
+                         "Enter Program Director ident", 
+                         unique(CompassColumns$Endorser.Name),
+                         selected = "")
+    
+    updateSelectizeInput(session,
+                         "GLident",
+                         "Enter Group Leader ident",
+                         unique(c(CompassColumns$Line.Manager.Name, CompassColumns$Endorser.Name)),
+                         selected = "")
+    
+    
+    #create a panel to input Program Director
+    updateSelectizeInput(session,
+                         "TLident",
+                         "Enter Team Leader ident",
+                         unique(c(CompassColumns$Line.Manager.Name, CompassColumns$Endorser.Name)),
+                         selected = "")
+  })
   loaded_query <- reactive({
     input$saved_query_name
     # browser()
     if(!is.null(input$saved_query_name)) {
-    # browser()
+      # browser()
       query_names <- unlist(lapply(rv$saved_queries, function(x) x$name))
       query <- rv$saved_queries[[match(input$saved_query_name, query_names)]]
       return(query)
@@ -95,7 +131,7 @@ function(input, output, session) {
   })
   
   leaders <- eventReactive(input$submit, {
-   CompassColumns %>% 
+    CompassColumns %>% 
       filter(Endorser.Name %in% input$PLident | Line.Manager.Name %in% c(input$PLident, input$GLident, input$TLident))%>%
       select(-Endorser.Name, -Line.Manager.Name)%>%
       mutate(Blank1 = " ",Blank2 = " " )%>%
